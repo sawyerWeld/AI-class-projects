@@ -1,6 +1,10 @@
 public class City {
 	String name;
+	
+	//cartesian coordinates
 	int x, y;
+	
+	//heuristic score, path-to-get-here cost, A* function cost (hval + gval)
 	double hVal,gVal,fVal;
 	City parent;
 	
@@ -10,8 +14,12 @@ public class City {
 		y = y_;
 	}
 	
+	/**
+	 * sets hVal and fVal to heuristic.
+	 */
 	public void setHeuristic(double hVal_) {
 		hVal = hVal_;
+		fVal = hVal_;
 	}
 	
 	public void print() {
