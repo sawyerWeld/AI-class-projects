@@ -19,7 +19,7 @@ public class City {
 	}
 	
 	public String info(){
-		return name + ": (" + x + "," + y + ")";
+		return name + ": (" + x + "," + y + ")" + " hVal: " + hVal;
 	}
 	
 	public String getName() {

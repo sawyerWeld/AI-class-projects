@@ -7,41 +7,59 @@ import java.util.List;
 import java.util.Map.Entry;
 
 public class Salesman {
+	
 	int mapSize;
 
 	List<City> openSet = new ArrayList<City>();
 	List<City> closedSet = new ArrayList<City>();
-
 	
+	City start;
+	City goal;
 
 	String file;
 
 	public Salesman(String filename) {
 		file = filename;
+		processFile();
+		setHeuristics();
 	}
 
 	public double dist(int x1, int y1, int x2, int y2) {
 		return Math.sqrt(Math.pow((x1 - x2), 2) + Math.pow((y1 - y2), 2));
 	}
 
+	/**
+	 * Returns euclidean distance between a and b
+	 */
 	public double dist(City a, City b) {
 		return dist(a.getX(), a.getY(), b.getX(), b.getY());
 	}
 
-	public void printWorld() {
-		System.out.println("World: ");
+	/**
+	 * Print important information.
+	 */
+	public void printStatus() {
+		System.out.println("Finding Route from " + start.name + " to " + goal.name);
+		System.out.println("Open: ");
 		for (City c : openSet) {
+			c.print();
+		}
+		System.out.println("Closed Set: ");
+		for (City c : closedSet) {
 			c.print();
 		}
 	}
 
-	
-	public List<City> getClosedSet() {
-		return closedSet;
-	}
-
-	public List<City> getOpenSet() {
-		return openSet;
+	/**
+	 * Sets hVal for all nodes. hVal is distance to goal.
+	 */
+	void setHeuristics() {
+		for (City c : openSet) {
+			c.setHeuristic(dist(c,goal));
+		}
+		for (City c : closedSet) {
+			c.setHeuristic(dist(c,goal));
+		}
 	}
 
 	TreeMap<Double, City> expandNode(City c) {
@@ -61,6 +79,9 @@ public class Salesman {
 		return distMap;
 	}
 
+	/**
+	 * Reads from file. Sets initial openSet, closedSet
+	 */
 	public void processFile() {
 		try {
 			try (BufferedReader br = new BufferedReader(new FileReader(file))) {
@@ -69,21 +90,36 @@ public class Salesman {
 				while ((line = br.readLine()) != null) {
 					String[] parts = line.split(" ");
 					City c = new City(parts[0], Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));
-					openSet.add(c);
+					if (closedSet.size() == 0) {//start value goes in closed set
+						closedSet.add(c);
+					} else {
+						openSet.add(c);
+					}
 				}
-				City start = openSet.get(0);
+				if (mapSize >= 2) { //0 or 1 value means A* is dumb
+					start = closedSet.get(0);
+					goal = openSet.get(openSet.size()-1);
+				} else if (mapSize == 1) {
+					start = closedSet.get(0);
+					goal = start;
+				} else {
+					System.err.println("No Nodes detected");
+				}
 			}
 		} catch (Exception e) {
 			System.err.println(e);
 		}
 	}
 
+	/**
+	 * Runner Method
+	 */
+	public void AStar() {
+		
+	}
+	
 	public static void main(String[] args) {
-		Salesman sam = new Salesman("./problem/randTSP/4/instance_5.txt");
-		sam.processFile();
-		sam.printWorld();
-		sam.expandNode(sam.getOpenSet().get(0));
-		sam.getClosedSet().get(0).print();
-		// sam.expandFully();
+		Salesman sam = new Salesman("./problem/randTSP/4/instance_1.txt");
+		sam.printStatus();
 	}
 }
