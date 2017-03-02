@@ -64,6 +64,10 @@ public class Salesman {
 		}
 	}
 
+	double heuristicEstimate(City c) {
+		return dist(c, goal);
+	}
+
 	/**
 	 * Sets parents of all nodes to start
 	 */
@@ -80,9 +84,10 @@ public class Salesman {
 			closedSet.add(c);
 		} else {
 			System.err.println("error on closeNode " + c.getName());
+			printStatus();
 		}
 	}
-	
+
 	void openNode(City c) {
 		if (closedSet.contains(c)) {
 			closedSet.remove(c);
@@ -159,44 +164,56 @@ public class Salesman {
 			// current node is node in open set with lowest score
 			City node_current = scoreOpenSet().firstEntry().getValue();
 			// if we are at the goal
-			if (node_current.equals(goal)) {
-				System.out.println("found it");
-				//return;
-			}
+			/*
+			 * if (node_current.equals(goal) && openSet.size() == 1) {
+			 * System.out.println("found it"); // exit; }
+			 */
+			// close the current node
+			closeNode(node_current);
 			// expand nodes
-			for (City node_successor : allNodes) {
+			List<City> neighbors = allNodes;
+			neighbors.remove(node_current);
+			for (City node_successor : neighbors) {
+				printStatus();
 				// dont want to move from ourself to ourself
-				if (!node_successor.equals(node_current)) {
-					Boolean goodNode = true;
-					//
-					double successor_current_cost = node_current.getGScore() + dist(node_current, node_successor);
-					// successor is in open list
-					if (openSet.contains(node_successor)) {
-						if (node_successor.getGScore() <= successor_current_cost) {
-							goodNode = false;
-						}
-					}
-					// successor is in closed list
-					else {
-						if (node_successor.getGScore() <= successor_current_cost) {
-							goodNode = false;
-						}
-						openNode(node_successor);
-					}
-					if (goodNode) {
-						node_successor.setGScore(successor_current_cost);
-						node_successor.setParent(node_current);
-					}
-					closeNode(node_current);
+
+				Boolean goodNode = true;
+				//
+				if (closedSet.contains(node_successor)) {
+					goodNode = false;
 				}
+				// cost to add successor to path
+				double successor_current_cost = node_current.getGScore() + dist(node_current, node_successor);
+				//
+				if (successor_current_cost >= node_successor.getGScore()) {
+					goodNode = false;
+				}
+				if (goodNode) {
+					node_successor.setParent(node_current);
+					node_successor.setGScore(successor_current_cost);
+					node_successor.setFScore(node_successor.getGScore() + heuristicEstimate(goal));
+				}
+
 			}
 		}
+		// call optimalPath
+	}
+
+	public List<City> optimalPath(City c) {
+		List<City> Visited = new ArrayList<City>();
+		City current = c;
+		while (current.getParent() != null) {
+			Visited.add(current);
+			current = current.getParent();
+		}
+		return Visited;
 	}
 
 	public static void main(String[] args) {
-		Salesman sam = new Salesman("./randTSP/4/instance_1.txt");
+		Salesman sam = new Salesman("./problem/randTSP/4/instance_1.txt");
 		sam.printStatus();
+		System.out.println("___________");
 		sam.AStar();
-		sam.printStatus();
+		// sam.printStatus();
 	}
 }
