@@ -8,9 +8,12 @@ import java.util.Map.Entry;
 
 public class Salesman {
 	int mapSize;
-	List<City> world = new ArrayList<City>();
-	HashMap<Double, City> hMap = new HashMap<Double, City>();
-	List<City> explored = new ArrayList<City>();
+
+	List<City> openSet = new ArrayList<City>();
+	List<City> closedSet = new ArrayList<City>();
+
+	
+
 	String file;
 
 	public Salesman(String filename) {
@@ -27,44 +30,29 @@ public class Salesman {
 
 	public void printWorld() {
 		System.out.println("World: ");
-		for (City c : world) {
+		for (City c : openSet) {
 			c.print();
 		}
-		
 	}
+
 	
-	public void printHMap() {
-		System.out.println("Heuristic Map: ");
-		for (Entry<Double, City> entry : hMap.entrySet()) {
-			System.out.println(entry.getValue().info() + " -- " + entry.getKey());
-		}
+	public List<City> getClosedSet() {
+		return closedSet;
 	}
 
-	public List<City> getCities() {
-		return world;
-	}
-
-	public void expandFully() {
-		int depth = 0;
-		City start = world.get(0);
-		/*
-		TreeMap<Double, City> curList = expandNode(start);
-		for (Entry<Double, City> j : curList.entrySet()) {
-			expandNode(j.getValue());
-		}
-		*/
-
+	public List<City> getOpenSet() {
+		return openSet;
 	}
 
 	TreeMap<Double, City> expandNode(City c) {
-		explored.add(c);
+		closedSet.add(c);
 		TreeMap<Double, City> distMap = new TreeMap<Double, City>(); // liskov
 																		// sub
 																		// principal?
 		System.out.print("Expanding node: ");
 		c.print();
-		for (City i : world) { // and isnt in teh explored list
-			if (!i.equals(c) && !explored.contains(i)) {
+		for (City i : openSet) { // and isnt in teh explored list
+			if (!i.equals(c) && !closedSet.contains(i)) {
 				double dist = dist(c, i);
 				distMap.put(dist, i);
 				System.out.println(i.info() + " -- " + dist);
@@ -81,12 +69,9 @@ public class Salesman {
 				while ((line = br.readLine()) != null) {
 					String[] parts = line.split(" ");
 					City c = new City(parts[0], Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));
-					world.add(c);
+					openSet.add(c);
 				}
-				City start = world.get(0);
-				for (City c : world) {
-					hMap.put(dist(start, c), c);
-				}
+				City start = openSet.get(0);
 			}
 		} catch (Exception e) {
 			System.err.println(e);
@@ -97,8 +82,8 @@ public class Salesman {
 		Salesman sam = new Salesman("./problem/randTSP/4/instance_5.txt");
 		sam.processFile();
 		sam.printWorld();
-		sam.printHMap();
-		sam.expandNode(sam.getCities().get(0));
+		sam.expandNode(sam.getOpenSet().get(0));
+		sam.getClosedSet().get(0).print();
 		// sam.expandFully();
 	}
 }
