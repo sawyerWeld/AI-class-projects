@@ -1,6 +1,4 @@
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,32 +6,41 @@ import java.util.List;
 public class Salesman {
 	int mapSize;
 	List<City> world = new ArrayList<City>();
+	String file;
 
-	public Salesman(String filename){
-		processFile(filename);
+	public Salesman(String filename) {
+		file = filename;
 	}
-	
+
 	public double dist(int x1, int y1, int x2, int y2) {
 		return Math.sqrt(Math.pow((x1 - x2), 2) + Math.pow((y1 - y2), 2));
 	}
 
-	public void processFile(String filename) {
+	public void printWorld() {
+		for (City c : world) {
+			c.print();
+		}
+	}
+
+	public void processFile() {
 		try {
-			try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
-			    String line;
-			    while ((line = br.readLine()) != null) {
-			       System.out.println(line);
-			    }
+			try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+				String line;
+				mapSize = Integer.parseInt(br.readLine());
+				while ((line = br.readLine()) != null) {
+					String[] parts = line.split(" ");
+					City c = new City(parts[0], Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));
+					world.add(c);
+				}
 			}
-			//String first = in.nextLine();
 		} catch (Exception e) {
 			System.err.println(e);
 		}
 	}
 
 	public static void main(String[] args) {
-		Salesman sam = new Salesman("./src/City.java");
-		System.out.println("hello world");
-		System.out.println(sam.dist(0, 0, 5, 5));
+		Salesman sam = new Salesman("./problem/randTSP/8/instance_8.txt");
+		sam.processFile();
+		sam.printWorld();
 	}
 }

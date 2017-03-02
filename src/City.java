@@ -8,6 +8,10 @@ public class City {
 		y = y_;
 	}
 
+	public void print() {
+		System.out.println(name + ": (" + x + "," + y + ")");
+	}
+	
 	public String getName() {
 		return name;
 	}
