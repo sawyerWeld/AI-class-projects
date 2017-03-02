@@ -9,7 +9,11 @@ public class City {
 	}
 
 	public void print() {
-		System.out.println(name + ": (" + x + "," + y + ")");
+		System.out.println(info());
+	}
+	
+	public String info(){
+		return name + ": (" + x + "," + y + ")";
 	}
 	
 	public String getName() {

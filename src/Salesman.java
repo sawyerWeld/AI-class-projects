@@ -1,7 +1,11 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+
+import com.sun.javafx.collections.MappingChange.Map;
 
 public class Salesman {
 	int mapSize;
@@ -16,29 +20,44 @@ public class Salesman {
 		return Math.sqrt(Math.pow((x1 - x2), 2) + Math.pow((y1 - y2), 2));
 	}
 
+	public double dist(City a, City b) {
+		return dist(a.getX(), a.getY(), b.getX(), b.getY());
+	}
+
 	public void printWorld() {
+		System.out.println("World: ");
 		for (City c : world) {
 			c.print();
 		}
 	}
-	
+
 	public List<City> getCities() {
 		return world;
 	}
 	
-	List<City> expandNode(City c){
-		List<City> cities = new ArrayList<City>();
-		for (City i : world) {
-			if (!i.equals(c)) {
-				cities.add(i);
-			}
-		}
+	public void expandFully(){
+		int depth = 0;
+		//while (depth < mapSize) {
+			
+		//}
+		//for (City c : world) {
+			expandNode(world.get(0));
+		//}
+	}
+
+	LinkedHashMap<Double, City> expandNode(City c) {
+		LinkedHashMap<Double, City > distMap = new LinkedHashMap<Double,City>(); // not sure why i cant declare it as just a map
 		System.out.print("Expanding node: ");
 		c.print();
-		for (City j : cities) {
-			j.print();
+		for (City i : world) { // and isnt in teh explored list
+			if (!i.equals(c)) {
+				
+				double dist = dist(c,i);
+				distMap.put(dist, i);
+				System.out.println(i.info() + " -- " + dist);
+			}
 		}
-		return cities;
+		return distMap;
 	}
 
 	public void processFile() {
@@ -58,9 +77,10 @@ public class Salesman {
 	}
 
 	public static void main(String[] args) {
-		Salesman sam = new Salesman("./problem/randTSP/8/instance_8.txt");
+		Salesman sam = new Salesman("./problem/randTSP/4/instance_2.txt");
 		sam.processFile();
-		sam.printWorld();
-		sam.expandNode(sam.getCities().get(1));
+		//sam.printWorld();
+		//sam.expandNode(sam.getCities().get(0));
+		sam.expandFully();
 	}
 }
