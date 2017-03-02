@@ -12,14 +12,34 @@ public class City {
 		name = name_;
 		x = x_;
 		y = y_;
+		gVal = 0;
+	}
+	
+	public double getGScore() {
+		return gVal;
+	}
+	
+	public void setGScore(double d) {
+		gVal = d;
+	}
+	
+	public double getFScore() {
+		return hVal + gVal;
+	}
+	
+	public void setFScore(double d) {
+		fVal = d;
 	}
 	
 	/**
-	 * sets hVal and fVal to heuristic.
+	 * sets hVal to heuristic.
 	 */
 	public void setHeuristic(double hVal_) {
 		hVal = hVal_;
-		fVal = hVal_;
+	}
+	
+	public void setParent(City c) {
+		parent = c;
 	}
 	
 	public void print() {

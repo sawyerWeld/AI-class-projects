@@ -7,12 +7,13 @@ import java.util.List;
 import java.util.Map.Entry;
 
 public class Salesman {
-	
+
 	int mapSize;
 
+	List<City> allNodes = new ArrayList<City>();
 	List<City> openSet = new ArrayList<City>();
 	List<City> closedSet = new ArrayList<City>();
-	
+
 	City start;
 	City goal;
 
@@ -22,6 +23,7 @@ public class Salesman {
 		file = filename;
 		processFile();
 		setHeuristics();
+		setParents();
 	}
 
 	public double dist(int x1, int y1, int x2, int y2) {
@@ -55,11 +57,47 @@ public class Salesman {
 	 */
 	void setHeuristics() {
 		for (City c : openSet) {
-			c.setHeuristic(dist(c,goal));
+			c.setHeuristic(dist(c, goal));
 		}
 		for (City c : closedSet) {
-			c.setHeuristic(dist(c,goal));
+			c.setHeuristic(dist(c, goal));
 		}
+	}
+
+	/**
+	 * Sets parents of all nodes to start
+	 */
+	void setParents() {
+		for (City c : openSet) {
+			c.setParent(start);
+		}
+		start.setParent(start);
+	}
+
+	void closeNode(City c) {
+		if (openSet.contains(c)) {
+			openSet.remove(c);
+			closedSet.add(c);
+		} else {
+			System.err.println("error on closeNode " + c.getName());
+		}
+	}
+	
+	void openNode(City c) {
+		if (closedSet.contains(c)) {
+			closedSet.remove(c);
+			openSet.add(c);
+		} else {
+			System.err.println("error on openNode " + c.getName());
+		}
+	}
+
+	TreeMap<Double, City> scoreOpenSet() {
+		TreeMap<Double, City> scoreMap = new TreeMap<Double, City>();
+		for (City c : openSet) {
+			scoreMap.put(c.getFScore(), c);
+		}
+		return scoreMap;
 	}
 
 	TreeMap<Double, City> expandNode(City c) {
@@ -90,15 +128,17 @@ public class Salesman {
 				while ((line = br.readLine()) != null) {
 					String[] parts = line.split(" ");
 					City c = new City(parts[0], Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));
-					if (closedSet.size() == 0) {//start value goes in closed set
+					if (closedSet.size() == 0) {// start value goes in closed
+												// set
 						closedSet.add(c);
 					} else {
 						openSet.add(c);
 					}
+					allNodes.add(c);
 				}
-				if (mapSize >= 2) { //0 or 1 value means A* is dumb
+				if (mapSize >= 2) { // 0 or 1 value means A* is dumb
 					start = closedSet.get(0);
-					goal = openSet.get(openSet.size()-1);
+					goal = openSet.get(openSet.size() - 1);
 				} else if (mapSize == 1) {
 					start = closedSet.get(0);
 					goal = start;
@@ -115,11 +155,48 @@ public class Salesman {
 	 * Runner Method
 	 */
 	public void AStar() {
-		
+		while (!openSet.isEmpty()) {
+			// current node is node in open set with lowest score
+			City node_current = scoreOpenSet().firstEntry().getValue();
+			// if we are at the goal
+			if (node_current.equals(goal)) {
+				System.out.println("found it");
+				//return;
+			}
+			// expand nodes
+			for (City node_successor : allNodes) {
+				// dont want to move from ourself to ourself
+				if (!node_successor.equals(node_current)) {
+					Boolean goodNode = true;
+					//
+					double successor_current_cost = node_current.getGScore() + dist(node_current, node_successor);
+					// successor is in open list
+					if (openSet.contains(node_successor)) {
+						if (node_successor.getGScore() <= successor_current_cost) {
+							goodNode = false;
+						}
+					}
+					// successor is in closed list
+					else {
+						if (node_successor.getGScore() <= successor_current_cost) {
+							goodNode = false;
+						}
+						openNode(node_successor);
+					}
+					if (goodNode) {
+						node_successor.setGScore(successor_current_cost);
+						node_successor.setParent(node_current);
+					}
+					closeNode(node_current);
+				}
+			}
+		}
 	}
-	
+
 	public static void main(String[] args) {
-		Salesman sam = new Salesman("./problem/randTSP/4/instance_1.txt");
+		Salesman sam = new Salesman("./randTSP/4/instance_1.txt");
+		sam.printStatus();
+		sam.AStar();
 		sam.printStatus();
 	}
 }
