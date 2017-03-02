@@ -12,7 +12,7 @@ public class City {
 		name = name_;
 		x = x_;
 		y = y_;
-		gVal = 0;
+		gVal = Double.POSITIVE_INFINITY;
 	}
 
 	public double getGScore() {
@@ -24,16 +24,13 @@ public class City {
 	}
 
 	public double getFScore() {
-		return hVal + gVal;
+		return fVal;
 	}
 
 	public void setFScore(double d) {
 		fVal = d;
 	}
 
-	/**
-	 * sets hVal to heuristic.
-	 */
 	public void setHeuristic(double hVal_) {
 		hVal = hVal_;
 	}
@@ -51,7 +48,7 @@ public class City {
 	}
 
 	public String info() {
-		return name + ": (" + x + "," + y + ")" + " hVal: " + hVal;
+		return name + ": (" + x + "," + y + ")" + " hVal: " + hVal + " p: " + parent.getName() + " g: " + gVal;
 	}
 
 	public String getName() {

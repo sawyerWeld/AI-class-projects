@@ -15,7 +15,7 @@ public class Salesman {
 	List<City> closedSet = new ArrayList<City>();
 
 	City start;
-	City goal;
+	// City goal;
 
 	String file;
 
@@ -41,7 +41,7 @@ public class Salesman {
 	 * Print important information.
 	 */
 	public void printStatus() {
-		System.out.println("Finding Route from " + start.name + " to " + goal.name);
+		System.out.println("~~~~~~~~~~~~~");
 		System.out.println("Open: ");
 		for (City c : openSet) {
 			c.print();
@@ -50,6 +50,7 @@ public class Salesman {
 		for (City c : closedSet) {
 			c.print();
 		}
+		System.out.println("~~~~~~~~~~~~~");
 	}
 
 	/**
@@ -57,15 +58,11 @@ public class Salesman {
 	 */
 	void setHeuristics() {
 		for (City c : openSet) {
-			c.setHeuristic(dist(c, goal));
+			c.setHeuristic(dist(c, start));
 		}
 		for (City c : closedSet) {
-			c.setHeuristic(dist(c, goal));
+			c.setHeuristic(dist(c, start));
 		}
-	}
-
-	double heuristicEstimate(City c) {
-		return dist(c, goal);
 	}
 
 	/**
@@ -126,31 +123,31 @@ public class Salesman {
 	 * Reads from file. Sets initial openSet, closedSet
 	 */
 	public void processFile() {
-		try {
-			try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-				String line;
-				mapSize = Integer.parseInt(br.readLine());
-				while ((line = br.readLine()) != null) {
-					String[] parts = line.split(" ");
-					City c = new City(parts[0], Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));
-					if (closedSet.size() == 0) {// start value goes in closed
-												// set
-						closedSet.add(c);
-					} else {
-						openSet.add(c);
-					}
-					allNodes.add(c);
-				}
-				if (mapSize >= 2) { // 0 or 1 value means A* is dumb
-					start = closedSet.get(0);
-					goal = openSet.get(openSet.size() - 1);
-				} else if (mapSize == 1) {
-					start = closedSet.get(0);
-					goal = start;
-				} else {
-					System.err.println("No Nodes detected");
-				}
+
+		try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+			String line;
+			mapSize = Integer.parseInt(br.readLine());
+			while ((line = br.readLine()) != null) {
+				String[] parts = line.split(" ");
+				City c = new City(parts[0], Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));
+				openSet.add(c);
+				allNodes.add(c);
 			}
+			if (mapSize > 2) { // 0 or 1 value means A* is dumb
+				start = openSet.get(0);
+			} else if (mapSize == 2) {
+				start = openSet.get(0);
+				openSet.get(1).setParent(start);
+				start.setParent(openSet.get(1));
+				optimalPath(start);
+			} else if (mapSize == 1) {
+				start = openSet.get(0);
+				System.out.println("Path: " + start.getName());
+			} else {
+				System.err.println("No Nodes detected");
+			}
+			start.setGScore(0);
+
 		} catch (Exception e) {
 			System.err.println(e);
 		}
@@ -162,57 +159,62 @@ public class Salesman {
 	public void AStar() {
 		while (!openSet.isEmpty()) {
 			// current node is node in open set with lowest score
-			City node_current = scoreOpenSet().firstEntry().getValue();
-			// if we are at the goal
-			/*
-			 * if (node_current.equals(goal) && openSet.size() == 1) {
-			 * System.out.println("found it"); // exit; }
-			 */
+			City node_current = openSet.get(0);
 			// close the current node
 			closeNode(node_current);
+			//if we are on the last node
+			if (openSet.isEmpty()) {
+				start.setParent(node_current);
+				optimalPath(start);
+				return;
+			}
 			// expand nodes
-			List<City> neighbors = allNodes;
-			neighbors.remove(node_current);
-			for (City node_successor : neighbors) {
-				printStatus();
-				// dont want to move from ourself to ourself
-
-				Boolean goodNode = true;
-				//
-				if (closedSet.contains(node_successor)) {
-					goodNode = false;
-				}
+			for (City node_successor : allNodes) {
+				System.out.println("Considering: " + node_successor.getName());
 				// cost to add successor to path
 				double successor_current_cost = node_current.getGScore() + dist(node_current, node_successor);
-				//
-				if (successor_current_cost >= node_successor.getGScore()) {
-					goodNode = false;
+
+				// Whether or not we should branch the path to the successor,
+				// default true
+				Boolean pathNode = true;
+
+				// If the successor is already closed
+				if (closedSet.contains(node_successor)) {
+					System.out.println("node was closed " + node_successor.getName());
+					pathNode = false;
+				} else if (successor_current_cost >= node_successor.getGScore()) {
+					System.out.println("node was expensive: " + node_successor.getName());
+					System.out.println(
+							"Expense: " + successor_current_cost + ", Successor G: " + node_successor.getGScore());
+					pathNode = false;
 				}
-				if (goodNode) {
+				if (pathNode) {
+					System.out.println("good node");
 					node_successor.setParent(node_current);
 					node_successor.setGScore(successor_current_cost);
-					node_successor.setFScore(node_successor.getGScore() + heuristicEstimate(goal));
+					node_successor.setFScore(node_successor.getGScore() + dist(node_successor, start));
+					printStatus();
 				}
+				// printStatus();
 
 			}
 		}
+		//optimalPath(start);
 		// call optimalPath
 	}
 
-	public List<City> optimalPath(City c) {
-		List<City> Visited = new ArrayList<City>();
+	public void optimalPath(City c) {
+		System.out.println("Path:");
 		City current = c;
-		while (current.getParent() != null) {
-			Visited.add(current);
+		for (int i = 0; i < mapSize; i++) {
+			current.print();
 			current = current.getParent();
 		}
-		return Visited;
+		System.out.println("~~~");
 	}
 
 	public static void main(String[] args) {
-		Salesman sam = new Salesman("./problem/randTSP/4/instance_1.txt");
-		sam.printStatus();
-		System.out.println("___________");
+		Salesman sam = new Salesman("./randTSP/4/instance_1.txt");		
 		sam.AStar();
 		// sam.printStatus();
 	}
