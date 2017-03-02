@@ -22,7 +22,7 @@ public class Salesman {
 	public Salesman(String filename) {
 		file = filename;
 		processFile();
-		setHeuristics();
+		//setHeuristics();
 		setParents();
 	}
 
@@ -158,48 +158,46 @@ public class Salesman {
 	 */
 	public void AStar() {
 		while (!openSet.isEmpty()) {
-			// current node is node in open set with lowest score
+			// current node is node in open set with lowest score todo
 			City node_current = openSet.get(0);
+			System.out.println("@Current Node: " + node_current.getName());
 			// close the current node
 			closeNode(node_current);
-			//if we are on the last node
+			// if we are on the last node
 			if (openSet.isEmpty()) {
 				start.setParent(node_current);
 				optimalPath(start);
 				return;
 			}
+			
+			boolean foundAShortCut = false;
 			// expand nodes
-			for (City node_successor : allNodes) {
+			for (City node_successor : openSet) {
 				System.out.println("Considering: " + node_successor.getName());
 				// cost to add successor to path
-				double successor_current_cost = node_current.getGScore() + dist(node_current, node_successor);
+				double pathCost = node_current.getGScore() + dist(node_current, node_successor);
 
-				// Whether or not we should branch the path to the successor,
-				// default true
-				Boolean pathNode = true;
-
-				// If the successor is already closed
-				if (closedSet.contains(node_successor)) {
-					System.out.println("node was closed " + node_successor.getName());
-					pathNode = false;
-				} else if (successor_current_cost >= node_successor.getGScore()) {
+				if (pathCost > node_successor.getGScore()) {
 					System.out.println("node was expensive: " + node_successor.getName());
 					System.out.println(
-							"Expense: " + successor_current_cost + ", Successor G: " + node_successor.getGScore());
-					pathNode = false;
-				}
-				if (pathNode) {
+							"Expense: " + pathCost + ", Successor G: " + node_successor.getGScore());
+
+				} else {
 					System.out.println("good node");
+					foundAShortCut = true;
 					node_successor.setParent(node_current);
-					node_successor.setGScore(successor_current_cost);
-					node_successor.setFScore(node_successor.getGScore() + dist(node_successor, start));
+					node_successor.setGScore(pathCost);
+					// node_successor.setFScore(node_successor.getGScore() +
+					// dist(node_successor, start));
 					printStatus();
 				}
 				// printStatus();
-
+			}
+			if (!foundAShortCut){
+				
 			}
 		}
-		//optimalPath(start);
+		// optimalPath(start);
 		// call optimalPath
 	}
 
@@ -214,7 +212,7 @@ public class Salesman {
 	}
 
 	public static void main(String[] args) {
-		Salesman sam = new Salesman("./randTSP/4/instance_1.txt");		
+		Salesman sam = new Salesman("./randTSP/4/instance_1.txt");
 		sam.AStar();
 		// sam.printStatus();
 	}
