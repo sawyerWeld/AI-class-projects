@@ -21,6 +21,25 @@ public class Salesman {
 			c.print();
 		}
 	}
+	
+	public List<City> getCities() {
+		return world;
+	}
+	
+	List<City> expandNode(City c){
+		List<City> cities = new ArrayList<City>();
+		for (City i : world) {
+			if (!i.equals(c)) {
+				cities.add(i);
+			}
+		}
+		System.out.print("Expanding node: ");
+		c.print();
+		for (City j : cities) {
+			j.print();
+		}
+		return cities;
+	}
 
 	public void processFile() {
 		try {
@@ -42,5 +61,6 @@ public class Salesman {
 		Salesman sam = new Salesman("./problem/randTSP/8/instance_8.txt");
 		sam.processFile();
 		sam.printWorld();
+		sam.expandNode(sam.getCities().get(1));
 	}
 }
