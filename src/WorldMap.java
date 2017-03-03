@@ -97,7 +97,7 @@ public class WorldMap {
 	}
 
 	public boolean isAStarGoal(Route r) {
-		List<Hub> list = r.path;
+		List<Hub> list = new ArrayList<Hub>(r.path);
 		if (list.size() != hubs.size()) {
 			return false;
 		}
@@ -115,7 +115,7 @@ public class WorldMap {
 		List<Hub> list = r.path;
 
 		// Nothit is all the hubs we haven't visited
-		List<Hub> notHit = hubs;
+		List<Hub> notHit = new ArrayList<Hub>(hubs);
 		notHit.removeAll(list);
 
 		// add each character not hit to a new route
