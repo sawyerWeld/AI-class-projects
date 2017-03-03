@@ -24,17 +24,23 @@ public class AyyStar {
 		world.print(open);
 
 		while (!open.isEmpty()) {
+			System.out.println("in loop\n\n");
 			// the node in open having the lowest fScore
 			Route current = world.getShortest(open);
 
 			if (world.isAStarGoal(current)) {
+				System.out.println("yay");
 				world.print(current);
 				return current;
 			}
 			
 			open.remove(current);
 			closed.add(current);
-			
+			/*System.out.println("open:");
+			world.print(open);
+			System.out.println("closed:");
+			world.print(closed);
+			System.out.println("	/closed:");*/
 			for (Route neighbor : world.getAStarNeighbors(current)) {
 				boolean goodNode = true;
 				if (closed.contains(neighbor)) {
@@ -60,7 +66,7 @@ public class AyyStar {
 	}
 
 	public static void main(String[] args) {
-		AyyStar aStr = new AyyStar("./randTSP/3/instance_1.txt");
+		AyyStar aStr = new AyyStar("./randTSP/3/instance_4.txt");
 		aStr.findRoute();
 	}
 }
