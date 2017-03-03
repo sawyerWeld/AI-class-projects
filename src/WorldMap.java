@@ -6,39 +6,39 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 public class WorldMap {
-
+	
+	/*		The purpose of WorldMap is to seperate out code I'm using for A*
+	 * 		that I think may be useful for Simulated Annealing
+	 *
+	 */
 	int mapSize;
 
+	// all the hubs (hubs are my representation of cities)
 	List<Hub> hubs = new ArrayList<Hub>();
 
+	// euclidean distance
 	public double dist(int x1, int y1, int x2, int y2) {
 		return Math.sqrt(Math.pow((x1 - x2), 2) + Math.pow((y1 - y2), 2));
 	}
 
-	/**
-	 * Returns euclidean distance between a and b
-	 */
+	// distance between two hubs 
 	public double dist(Hub a, Hub b) {
 		return dist(a.x, a.y, b.x, b.y);
 	}
 
+	// Distance between all the nodes in a list
+	// including wrapping back to the first
 	public double dist(List<Hub> list) {
-		//System.out.println("yo" + list.size());
 		double sum = 0;
 		for (Hub b : list) {
 			if (list.indexOf(b) != list.size()-1) {
-				//System.out.print("inner ");
 				double dist = dist(b,list.get(list.indexOf(b)+1));
 				sum += dist;
-				//System.out.println(dist);
 			} else {
-				//System.out.print("last ");
 				double dist = dist(b,list.get(0));
 				sum += dist;
-				//System.out.println(dist);
 			}
 		}
-		//System.out.println(sum);
 		return sum;
 	}
 
