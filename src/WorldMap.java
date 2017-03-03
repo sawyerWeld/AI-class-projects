@@ -5,14 +5,13 @@ import java.util.List;
 
 public class WorldMap {
 	
-	
 	int mapSize;
 	
-	List<City> cities = new ArrayList<City>();
+	List<Hub> hubs = new ArrayList<Hub>();
 
-	public void printCities() {
-		for (City c : cities) {
-			c.print();
+	public void printHubs() {
+		for (Hub i : hubs) {
+			i.print();
 		}
 	}
 	
@@ -26,8 +25,8 @@ public class WorldMap {
 			mapSize = Integer.parseInt(br.readLine());
 			while ((line = br.readLine()) != null) {
 				String[] parts = line.split(" ");
-				City c = new City(parts[0], Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));
-				cities.add(c);
+				Hub c = new Hub(parts[0], Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));
+				hubs.add(c);
 			}
 		} catch (Exception e) {
 			System.err.println(e);
