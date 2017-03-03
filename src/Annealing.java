@@ -28,6 +28,6 @@ public class Annealing {
 
 	public static void main(String[] args) {
 		AyyStar aStr = new AyyStar("./randTSP/3/instance_1.txt");
-		aStr.findRoute();
+		//aStr.findRoute();
 	}
 }

@@ -5,6 +5,8 @@ public class Route {
 	double dist;
 	double hscore;
 	Route parent;
+	
+	
 	public Route(List<Hub> route) {
 		WorldMap wm = new WorldMap();
 		path = route;

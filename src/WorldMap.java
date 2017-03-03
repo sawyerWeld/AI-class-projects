@@ -26,7 +26,7 @@ public class WorldMap {
 		double sum = 0;
 		for (int i = 0; i < list.size(); i++) {
 			if (i == list.size() - 1) {
-				sum += dist(list.get(list.size() - 1), list.get(0));
+				sum += dist(list.get(i), list.get(0));
 			} else {
 				sum += dist(list.get(i), list.get(i + 1));
 			}
@@ -41,6 +41,10 @@ public class WorldMap {
 		}
 	}
 
+	public double heuristic(Route r) {
+		return hubs.size() - r.path.size();
+	}
+	
 	public void print(TreeMap<Double, Route> list) {
 
 		for (Entry<Double, Route> i : list.entrySet()) {
@@ -66,6 +70,15 @@ public class WorldMap {
 		}
 	}
 
+	public void print(Route r) {
+		System.out.print("{" + r.dist + "} { ");
+		for (Hub i : r.path) {
+			i.print();
+			System.out.print(" ");
+		}
+		System.out.println("}");
+	}
+	
 	public boolean isAStarGoal(Route r) {
 		List<Hub> list = r.path;
 		if (list.size() != hubs.size()) {
@@ -80,8 +93,12 @@ public class WorldMap {
 	}
 	
 	public List<Route> getAStarNeighbors(Route r) {
+		
 		List<Route> neighbors = new ArrayList<Route>();
 		List<Hub> list = r.path;
+		// Not hit is all the hubs we haven't visited
+		List<Hub> notHit = hubs;
+		notHit.removeAll(list);
 		for (Hub i : hubs) {
 			if (!r.path.contains(i)) {
 				List<Hub> tempList = list;
@@ -89,6 +106,9 @@ public class WorldMap {
 				neighbors.add(new Route(tempList));
 			}
 		}
+		System.out.println("@");
+		print(neighbors);
+		System.out.println("@");
 		return neighbors;
 	}
 	
@@ -113,6 +133,7 @@ public class WorldMap {
 		for (Route i : list) {
 			map.put(i.dist + i.hscore, i);
 		}
+		//print(map.firstEntry().getValue());
 		return map.firstEntry().getValue();
 	}
 	

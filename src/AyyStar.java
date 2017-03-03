@@ -11,19 +11,27 @@ public class AyyStar {
 		world.printHubs();
 	}
 
-	void findRoute() {
+	 public Route findRoute() {
 		// The set of nodes already evaluated.
 		List<Route> closed = new ArrayList<Route>();
 		// The set of currently discovered nodes that are not evaluated yet.
 		List<Route> open = new ArrayList<Route>();
 		// Initially, only the start node is known.
-		open.add(new Route(world.hubs));
+		
+		List<Hub> init = new ArrayList<>();
+		init.add(world.hubs.get(0));
+		open.add(new Route(init));
 		world.print(open);
 
 		while (!open.isEmpty()) {
 			// the node in open having the lowest fScore
 			Route current = world.getShortest(open);
 
+			if (world.isAStarGoal(current)) {
+				world.print(current);
+				return current;
+			}
+			
 			open.remove(current);
 			closed.add(current);
 			
@@ -44,10 +52,11 @@ public class AyyStar {
 				if (goodNode){
 					// this node is good!
 					neighbor.parent = current;
-					//neighbor.hscore = world.heuristic(neighbor);
+					neighbor.hscore = world.heuristic(neighbor);
 				}
 			}
 		}
+		return null;
 	}
 
 	public static void main(String[] args) {
