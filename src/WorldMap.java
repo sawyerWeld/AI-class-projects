@@ -88,7 +88,8 @@ public class WorldMap {
 	}
 
 	public void print(Route r) {
-		System.out.print("{" + r.dist + "} { ");
+		String distf = String.format("%.3f",r.dist);
+		System.out.print("{" + distf + "} { ");
 		for (Hub i : r.path) {
 			i.print();
 			System.out.print(" ");
@@ -168,6 +169,7 @@ public class WorldMap {
 
 		try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
 			String line;
+			//System.out.println(filename);
 			mapSize = Integer.parseInt(br.readLine());
 			while ((line = br.readLine()) != null) {
 				String[] parts = line.split(" ");
