@@ -66,7 +66,33 @@ public class WorldMap {
 		}
 	}
 
-	public List<Route> getNeighbors(Route r) {
+	public boolean isAStarGoal(Route r) {
+		List<Hub> list = r.path;
+		if (list.size() != hubs.size()) {
+			return false;
+		}
+		for (Hub i : hubs) {
+			if (!list.contains(i)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public List<Route> getAStarNeighbors(Route r) {
+		List<Route> neighbors = new ArrayList<Route>();
+		List<Hub> list = r.path;
+		for (Hub i : hubs) {
+			if (!r.path.contains(i)) {
+				List<Hub> tempList = list;
+				tempList.add(i);
+				neighbors.add(new Route(tempList));
+			}
+		}
+		return neighbors;
+	}
+	
+	public List<Route> getAnnealingNeighbors(Route r) {
 		List<Route> mutations = new ArrayList<Route>();
 		List<Hub> list = r.path;
 		for (int i = 0; i < list.size(); i++) {
@@ -74,8 +100,8 @@ public class WorldMap {
 				//swap
 				List<Hub> tempList  = list;
 				Hub tempHub = tempList.get(i);
-				list.set(i, tempList.get(j));
-				list.set(j, tempHub);
+				tempList.set(i, tempList.get(j));
+				tempList.set(j, tempHub);
 				mutations.add(new Route(tempList));
 			}
 		}
@@ -87,7 +113,7 @@ public class WorldMap {
 		for (Route i : list) {
 			map.put(i.dist + i.hscore, i);
 		}
-		return map.get(0);
+		return map.firstEntry().getValue();
 	}
 	
 	/**
