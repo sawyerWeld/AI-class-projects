@@ -8,6 +8,6 @@ public class Hub {
 		y = y_;
 	}
 	public void print() {
-		System.out.println(name + "(" + x + "," + y + ")");
+		System.out.print(name + "(" + x + "," + y + ")");
 	}
 }
