@@ -8,8 +8,8 @@ public class WorldMap {
 
 	/*
 	 * The purpose of WorldMap is to seperate out code I'm using for A* that I
-	 * think may be useful for Simulated Annealing
-	 *
+	 * think may be useful for Simulated Annealing. Bits of this may change as
+	 * I need helper methods for simulated annealing, although hopefully not much.
 	 */
 	int mapSize;
 
@@ -94,12 +94,8 @@ public class WorldMap {
 		}
 		return neighbors;
 	}
-
-	public List<Route> getAnnealingNeighbors(Route r) {
-		List<Route> mutations = new ArrayList<Route>();
-		// yeah
-		return mutations;
-	}
+	
+	// Not sure if getAnnealingNeighbors goes here yet
 
 	// Returns the node in the list with the shortest path
 	// This is probably a terrible way of sorting
