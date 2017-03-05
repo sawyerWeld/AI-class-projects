@@ -56,10 +56,8 @@ public class Annealing {
 	}
 	
 	void findRoute(int maxIterations, int maxTemp) {
-		// Starting state. Alphabetical
-		Route start = new Route(world.hubs);
-		
-		Route current = randomNeighbor(start);
+		// Starting state. Alphabetical	
+		Route current = new Route(world.hubs);
 		Route best = current;
 		
 		int iters = 0;
@@ -74,6 +72,8 @@ public class Annealing {
 					best = rN;
 					world.print(current);
 				}
+			} else if (Math.exp((current.dist - rN.dist)/tempCurr) > Math.random()){
+				
 			}
 			
 			iters ++;
@@ -82,7 +82,7 @@ public class Annealing {
 	}
 
 	public static void main(String[] args) {
-		Annealing ann = new Annealing("./problem36");
+		Annealing ann = new Annealing("./randTSP/7/instance_1.txt");
 		ann.findRoute(1000, 1000);
 		// ann.demonStrateSwaps("ABCDEDFG");
 		// ann.annealingNeighbors(r);
