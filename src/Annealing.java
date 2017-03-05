@@ -52,10 +52,7 @@ public class Annealing {
 		return r;
 	}
 	
-	
-	double calculateTemp(int in) {
-		return 1250;
-	}
+
 
 	void findRoute() {
 		// Starting state. Alphabetical list is shuffled
