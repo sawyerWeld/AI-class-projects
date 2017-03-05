@@ -41,31 +41,50 @@ public class Annealing {
 			}
 			Route tempRoute = new Route(temp);
 			neighbors.add(new Route(temp));
-			world.print(tempRoute);
+			//world.print(tempRoute);
 		}
-		
+
 		int randIndex = rand.nextInt(neighbors.size());
 		Route randRoute = neighbors.get(randIndex);
-		System.out.print("~~");
-		world.print(randRoute);
+		//System.out.print("~~");
+		//world.print(randRoute);
 		return randRoute;
 	}
 
-	void findRoute() {
+	int calculateTemp(int iteration, int maxTemp) {
+		return 0;
+	}
+	
+	void findRoute(int maxIterations, int maxTemp) {
 		// Starting state. Alphabetical
 		Route start = new Route(world.hubs);
-		while (System.currentTimeMillis() % 50 != 10) {
-			// set temperature somehow
-		Route r = randomNeighbor(start);
-		randomNeighbor(r);
+		
+		Route current = randomNeighbor(start);
+		Route best = current;
+		
+		int iters = 0;
+		while (iters < maxIterations) {
+			Route rN = randomNeighbor(current);
+			
+			int tempCurr = calculateTemp(iters, maxTemp);
+			if (rN.dist <= current.dist) 
+			{
+				current = rN;
+				if (rN.dist <= best.dist) {
+					best = rN;
+					world.print(current);
+				}
+			}
+			
+			iters ++;
 		}
 		
 	}
 
 	public static void main(String[] args) {
-		Annealing ann = new Annealing("./randTSP/7/instance_1.txt");
-		ann.findRoute();
-		//ann.demonStrateSwaps("ABCDEDFG");
-		//ann.annealingNeighbors(r);
+		Annealing ann = new Annealing("./problem36");
+		ann.findRoute(1000, 1000);
+		// ann.demonStrateSwaps("ABCDEDFG");
+		// ann.annealingNeighbors(r);
 	}
 }
