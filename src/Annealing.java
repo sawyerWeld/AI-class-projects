@@ -41,49 +41,60 @@ public class Annealing {
 			}
 			Route tempRoute = new Route(temp);
 			neighbors.add(new Route(temp));
-			//world.print(tempRoute);
+			// world.print(tempRoute);
 		}
 
 		int randIndex = rand.nextInt(neighbors.size());
 		Route randRoute = neighbors.get(randIndex);
-		//System.out.print("~~");
-		//world.print(randRoute);
+		// System.out.print("~~");
+		// world.print(randRoute);
 		return randRoute;
 	}
 
-	int calculateTemp(int iteration, int maxTemp) {
-		return 0;
+	double calculateTemp(int in) {
+		return in;
 	}
-	
-	void findRoute(int maxIterations, int maxTemp) {
-		// Starting state. Alphabetical	
-		Route current = new Route(world.hubs);
+
+	void findRoute(int maxIterations) {
+		// Starting state. Alphabetical
+		List<Hub> allHubs = new ArrayList(world.hubs);
+		Collections.shuffle(allHubs);
+		Route current = new Route(allHubs);
 		Route best = current;
-		
+
 		int iters = 0;
-		while (iters < maxIterations) {
-			Route rN = randomNeighbor(current);
-			
-			int tempCurr = calculateTemp(iters, maxTemp);
-			if (rN.dist <= current.dist) 
-			{
-				current = rN;
-				if (rN.dist <= best.dist) {
-					best = rN;
-					world.print(current);
+		while (true) {
+			Route neighbor = randomNeighbor(current);
+
+			double tempCurr = calculateTemp(iters / maxIterations);
+			if (neighbor.dist <= current.dist) {
+				current = neighbor;
+				if (neighbor.dist <= best.dist) {
+					best = neighbor;
+					System.out.print("~");
+					world.print(best);
+					System.out.println(tempCurr);
+
 				}
-			} else if (Math.exp((current.dist - rN.dist)/tempCurr) > Math.random()){
-				
+			} else {
+				double checkTerm = Math.exp((neighbor.dist - current.dist) / tempCurr);
+				System.out.println(checkTerm);
+				if (checkTerm > Math.random()) {
+					//System.out.println("accepting worse path: " + checkTerm);
+					current = neighbor;
+				}
 			}
 			
-			iters ++;
+			
+			if (!(iters == maxIterations))
+				iters++;
 		}
-		
+
 	}
 
 	public static void main(String[] args) {
-		Annealing ann = new Annealing("./randTSP/7/instance_1.txt");
-		ann.findRoute(1000, 1000);
+		Annealing ann = new Annealing("./problem36");
+		ann.findRoute(1000);
 		// ann.demonStrateSwaps("ABCDEDFG");
 		// ann.annealingNeighbors(r);
 	}
