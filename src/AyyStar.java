@@ -119,23 +119,28 @@ public class AyyStar {
 	}
 
 	public static void main(String[] args) {
-		
+
 		// find shortest TSP for every file in every subdirectory of the folder
-		// I moved depth 10-16 to another folder so that this only takes a few seconds
-		
-		AyyStar aStr = new AyyStar("./randTSP/1/instance_1.txt");
-		try {
-			PrintWriter writer = new PrintWriter("AStar_Results.txt", "UTF-8");
-			writer.println("Num_Cities - Num_Nodes - Milliseconds");
-			final File folder = new File("./randTSP/");
-			for (String s : aStr.getPaths(folder)) {
-				AyyStar temp = new AyyStar(s);
-				temp.findRoute();
-				writer.printf("%d %d %d%n", temp.numCities, temp.nodesExpanded, temp.timeTake);
+		// I moved depth 10-16 to another folder so that this only takes a few
+		// seconds
+
+		AyyStar aStr = new AyyStar("./hardTSP/a10/instance_1.txt");
+		aStr.findRoute();
+		boolean doMOre = false;
+		if (doMOre) {
+			try {
+				PrintWriter writer = new PrintWriter("AStar_Results.txt", "UTF-8");
+				writer.println("Num_Cities - Num_Nodes - Milliseconds");
+				final File folder = new File("./randTSP/");
+				for (String s : aStr.getPaths(folder)) {
+					AyyStar temp = new AyyStar(s);
+					temp.findRoute();
+					writer.printf("%d %d %d%n", temp.numCities, temp.nodesExpanded, temp.timeTake);
+				}
+				writer.close();
+			} catch (IOException e) {
+				System.err.println(e);
 			}
-			writer.close();
-		} catch (IOException e) {
-			System.err.println(e);
 		}
 	}
 }

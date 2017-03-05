@@ -29,7 +29,7 @@ public class Annealing {
 		}
 	}
 
-	public Route randomNeighbor(Route r) {
+	public Route randomNeighbor0(Route r) {
 		List<Route> neighbors = new ArrayList<>();
 		List<Hub> current = r.path;
 		for (int i = 0; i < current.size(); i++) {
@@ -41,52 +41,58 @@ public class Annealing {
 			}
 			Route tempRoute = new Route(temp);
 			neighbors.add(new Route(temp));
-			// world.print(tempRoute);
 		}
 
 		int randIndex = rand.nextInt(neighbors.size());
 		Route randRoute = neighbors.get(randIndex);
-		// System.out.print("~~");
-		// world.print(randRoute);
 		return randRoute;
 	}
 
+	public Route randomNeighbor1(Route r) {
+		return r;
+	}
+	
+	
 	double calculateTemp(int in) {
-		return in;
+		return 1250;
 	}
 
-	void findRoute(int maxIterations) {
-		// Starting state. Alphabetical
-		List<Hub> allHubs = new ArrayList(world.hubs);
-		Collections.shuffle(allHubs);
+	void findRoute() {
+		// Starting state. Alphabetical list is shuffled
+		List<Hub> allHubs = new ArrayList<Hub>(world.hubs);
+		//Collections.shuffle(allHubs);
+		long startTime = System.currentTimeMillis();
 		Route current = new Route(allHubs);
 		Route best = current;
-
+		double temp = 1;
 		int iters = 0;
 		while (true) {
-			Route neighbor = randomNeighbor(current);
+			Route neighbor = randomNeighbor0(current);
 
-			double tempCurr = calculateTemp(iters / maxIterations);
+			if ((double)iters % 10 == 0 && !(temp < .1)) {
+				temp *= .99;// calculateTemp(iters / maxIterations);
+			}
+			//System.out.println(temp);
 			if (neighbor.dist <= current.dist) {
 				current = neighbor;
 				if (neighbor.dist <= best.dist) {
 					best = neighbor;
-					System.out.print("~");
+					// System.out.print("~");
 					world.print(best);
-					System.out.println(tempCurr);
+					System.out.println(temp + " ~ " + iters + " ~ " + (System.currentTimeMillis()-startTime)/1000);
 
 				}
 			} else {
-				double checkTerm = Math.exp((neighbor.dist - current.dist) / tempCurr);
-				System.out.println(checkTerm);
+				double checkTerm = Math.exp((current.dist - neighbor.dist) / temp);// div
+																					
+				//if (true) {
 				if (checkTerm > Math.random()) {
-					//System.out.println("accepting worse path: " + checkTerm);
+					//System.out.println(checkTerm);
 					current = neighbor;
 				}
 			}
+
 			
-			
-			if (!(iters == maxIterations))
 				iters++;
 		}
 
@@ -94,8 +100,6 @@ public class Annealing {
 
 	public static void main(String[] args) {
 		Annealing ann = new Annealing("./problem36");
-		ann.findRoute(1000);
-		// ann.demonStrateSwaps("ABCDEDFG");
-		// ann.annealingNeighbors(r);
+		ann.findRoute();
 	}
 }
