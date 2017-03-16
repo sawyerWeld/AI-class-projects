@@ -8,10 +8,11 @@ int[][] grid = new int[9][9];
 int[][] startGrid = new int[9][9];
 boolean readInFile = false;
 boolean displaySolved = false;
+sudoku_solver solver = new sudoku_solver();
 
 void setup() {
   // seting up the image and processing the file
-  frameRate(1);
+  frameRate(30);
   size(500, 500);
   background(255);
   stroke(0);
@@ -20,8 +21,6 @@ void setup() {
   textAlign(CENTER, CENTER);
   textFont(createFont("Georgia", 32));
 
-  sudoku_solver solver = new sudoku_solver();
-  startGrid = solver.startingGrid;
   selectInput("Pick a file", "processFile");
 }
 public void processFile(File selection) {
@@ -43,10 +42,9 @@ public void processFile(File selection) {
     br.close();
     readInFile = true;
     println("read in file: " + selection.getName() + " from " + selection.getParent());
-    if (displaySolved) {
-      sudoku_solver solver = new sudoku_solver();
-      solver.solve(grid);
-    }
+
+    solver.solve(grid);
+    startGrid = solver.startingGrid;
   } 
   catch (Exception e) {
     System.err.println(e);
@@ -63,7 +61,11 @@ public void draw() {
       fill(255);
       rect(i*50+23, j*50+2, 50, 50);
       fill(0);
-      int t = grid[i][j];
+      int t;
+      if (displaySolved)
+      t = grid[i][j];
+      else 
+      t = startGrid[i][j];
       if (t!=0)
         text(t, i*50+48, j*50+23);
       strokeWeight(6);
