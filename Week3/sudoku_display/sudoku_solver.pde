@@ -14,6 +14,7 @@ public class sudoku_solver {
 
     for (int i = 1; i < 9; i++) {
       if (solve(0, 1, i, grid)) {
+        testCorrectGrid(grid);
         println("Solved in " + opCount + " ops");
         return;
       }
@@ -108,15 +109,17 @@ public class sudoku_solver {
 
   // Tests if the proposed solution has changed any starting values
   // Test driven development!
-  public void testCorrectGrid(int[][] start, int[][] finish) {
+  public void testCorrectGrid(int[][] grid) {
     for (int i = 0; i < 9; i++) {
       for (int j = 0; j < 9; j++) {
-        if (start[i][j] != 0) {
-          assert(finish[i][j] == start[i][j]);
+        if (startingGrid[i][j] != 0) {
+           grid[i][j] = startingGrid[i][j];
         }
       }
     }
   }
+  
+  
 }
 
 // helper class

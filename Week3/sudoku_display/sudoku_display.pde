@@ -5,14 +5,16 @@ import java.util.Collections;
 import java.util.Random;
 
 int[][] grid = new int[9][9];
+// starting sudoku, so we can display it if we want
 int[][] startGrid = new int[9][9];
+// processing opens a new thread for getting files, so i need this
 boolean readInFile = false;
+// do i wanna show the solved puzzle?
 boolean displaySolved = false;
 sudoku_solver solver = new sudoku_solver();
 
 void setup() {
   // seting up the image and processing the file
-  frameRate(30);
   size(500, 500);
   background(255);
   stroke(0);
@@ -21,7 +23,7 @@ void setup() {
   textAlign(CENTER, CENTER);
   textFont(createFont("Georgia", 32));
 
-  selectInput("Pick a file", "processFile");
+  selectInput("Pick a puzzle to solve", "processFile");
 }
 public void processFile(File selection) {
   try {
@@ -92,6 +94,4 @@ public void draw() {
 
 void mouseClicked() {
   displaySolved = !displaySolved;
-  print("clicky");
-  println(displaySolved);
 }
