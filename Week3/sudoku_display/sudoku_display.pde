@@ -5,7 +5,9 @@ import java.util.Collections;
 import java.util.Random;
 
 int[][] grid = new int[9][9];
+int[][] startGrid = new int[9][9];
 boolean readInFile = false;
+boolean displaySolved = false;
 
 void setup() {
   // seting up the image and processing the file
@@ -18,6 +20,8 @@ void setup() {
   textAlign(CENTER, CENTER);
   textFont(createFont("Georgia", 32));
 
+  sudoku_solver solver = new sudoku_solver();
+  startGrid = solver.startingGrid;
   selectInput("Pick a file", "processFile");
 }
 public void processFile(File selection) {
@@ -38,9 +42,8 @@ public void processFile(File selection) {
 
     br.close();
     readInFile = true;
-    println("read in file: " + selection.getName());
-    boolean wantToSolve = true;
-    if (wantToSolve) {
+    println("read in file: " + selection.getName() + " from " + selection.getParent());
+    if (displaySolved) {
       sudoku_solver solver = new sudoku_solver();
       solver.solve(grid);
     }
@@ -76,4 +79,10 @@ public void draw() {
   }
   line(9*50+23, 4, 9*50+23, 450);
   line(23, 50*9+2, 473, 50*9+2);
+}
+
+void mouseClicked() {
+  displaySolved = !displaySolved;
+  print("clicky");
+  println(displaySolved);
 }

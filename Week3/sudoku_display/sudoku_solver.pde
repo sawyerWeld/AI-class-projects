@@ -3,19 +3,18 @@ import java.util.Arrays;
 public class sudoku_solver {
 
   int opCount = 0;
-  
+
   int[][] startingGrid = new int[9][9]; 
-  
+
   public void solve(int[][] grid) {
     // deep copy of array
     for (int i = 0; i < 9; i++) {
       startingGrid[i] = Arrays.copyOf(grid[i], 9);
     }
-     println(opCount);   
+
     for (int i = 1; i < 9; i++) {
       if (solve(0, 1, i, grid)) {
-        println("if you got this to print we're in luck");
-      
+        println("Solved in " + opCount + " ops");
         return;
       }
     }
@@ -23,14 +22,15 @@ public class sudoku_solver {
   }
 
   private boolean solve(int x, int y, int num, int[][] grid) {
-    opCount++;
+    opCount ++;
     grid[x][y] = num;
     if (isComplete(grid)) {
       return true;
     }
 
-    Point point = getNextBlock(x, y, grid);
+    Point point = new Point(0, 0);
     while (!isValidBlock(point.x, point.y, grid)) {
+      opCount++;
       point = getNextBlock(point.x, point.y, grid);
     }
 
@@ -38,7 +38,6 @@ public class sudoku_solver {
       if (isValidMove(point.x, point.y, i, grid)) {
         if (!solve(point.x, point.y, i, grid)) {
           grid[point.x][point.y] = 0;
-          
         } else {
           return true;
         }
@@ -80,7 +79,7 @@ public class sudoku_solver {
 
   // Tests to see if a proposed move is valid
   private boolean isValidMove(int x, int y, int num, int[][] grid) {
-    
+
     // Basic Checks
     if (x < 0 || x >= grid.length || y < 0 || y >= grid.length) {
       return false;
@@ -118,7 +117,6 @@ public class sudoku_solver {
       }
     }
   }
-  
 }
 
 // helper class
@@ -127,7 +125,6 @@ public class Point {
   int y;
 
   public Point(int x, int y) {
-    opCount++;
     this.x = x;
     this.y = y;
   }
