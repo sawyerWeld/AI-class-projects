@@ -55,6 +55,7 @@ public void draw() {
   if (!readInFile) {
     return;
   }
+  background(255);
   for (int i = 0; i < grid.length; i++) {
     for (int j = 0; j < grid[i].length; j++) {
       strokeWeight(2);
@@ -63,7 +64,7 @@ public void draw() {
       fill(0);
       int t;
       if (displaySolved)
-      t = grid[i][j];
+        t = grid[i][j];
       else 
       t = startGrid[i][j];
       if (t!=0)
@@ -81,6 +82,12 @@ public void draw() {
   }
   line(9*50+23, 4, 9*50+23, 450);
   line(23, 50*9+2, 473, 50*9+2);
+  if (displaySolved) {
+    text(solver.opCount + " ops",250,470);
+  } else 
+  {
+    text("Click to solve / unsolve",250,470);
+  }
 }
 
 void mouseClicked() {
