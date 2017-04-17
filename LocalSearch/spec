@@ -1,0 +1,76 @@
+From Introduction to AI Course by Dr. John Doucette
+
+Programming Questions
+
+In the next two questions you are asked to implement search algorithms for solving the Traveling Salesperson Problem (TSP). In a TSP a salesperson must visit n cities, visiting every city exactly once and returning to the city they started from. The goal is to find the tour with the lowest cost. Assume that the cost of traveling from one city to the next is the Euclidean distance between the two cities. That is, given two cities with coordinates (x1, y1) and (x2, y2), the cost of traveling between the two is \sqrt{(x_1-x_2)^2 + (y_1-y_2)^2}(x1−x2)2+(y1−y2)2.
+
+ 
+
+The two questions will both utilize the same data, found in the file problem.zipView in a new window. The data format of the problem instances is as follows:
+
+< number of cities >
+
+< city id > < X > < Y >
+
+< city id > < X > < Y >
+
+. . . . . . . . .
+
+< city id > < X > < Y >
+
+ 
+
+The < city id > is a capital letter. The identifiers < X > and < Y > represent the x and y coordinates (integers) of the city. Each city is on its own line and the number of cities is on the first line by itself. Example:
+
+ 
+
+3
+
+A 17 55
+
+B 24 38
+
+C 91 57
+
+A. Informed Search (44 Points)
+Write a program that uses the A∗ algorithm to solve the Traveling Salesperson Problem (TSP). Let the cost to move between cities be Euclidean distance. In the code, try to separate the domain independent part (search algorithm) from the domain specific part (TSP related functions). This will allow you to re-use parts of your code for Question B.
+
+a. Give a representation of the problem suitable for A∗ search. That is, describe states, their representation, the initial state, the goal state, the operators, and their cost. Use the following conventions;
+
+Always start from node A. (You might as well since every tour has to go through A; thus A never needs to be backtracked.)
+Generate the successors of any given node in alphabetical order.
+Count nodes as they are generated as successors.
+Generate and use a good admissible h function, and describe it in detail in the write-up. Think carefully about how to construct the h function since some choices of h functions may be too bad to allow you to execute the search in practice. If your program spends more than 20 minutes on a problem instance of 10 cities, something is wrong: terminate the run and rethink your design.
+
+b. Describe your heuristic function.
+
+c. Run A∗ search on the provided random test instances. Note that there are 10 instances for each number of cities. Determine how many nodes, on average, A∗ generates for each number of cities, and plot them using a graphing program of your choice (presentation matters: label your graph appropriately!). Extrapolate from these results roughly how many nodes A∗ search would generate for a 36 city problem. To do this, you may want to use a logarithmic scale in your graph. How long would such a search take to complete? How much memory do you think your computer would need?
+
+Submit the following:
+
+A well documented copy of your code.
+Your description of the problem representation.
+The description of your heuristic function.
+The plot of the average number of nodes generated for each number of cities.
+A discussion of how you expect A∗ search to perform on a 36-city problem instance
+ 
+
+B. Local Search (44 Points)
+Write a program that solves the TSP using simulated annealing.
+
+a. Explain what local search operators you use (make sure that the operators preserve a tour).
+
+b. Experiment with at least 3 different annealing schedules, and report your findings. What schedule would you suggest future practitioners use for this problem? Why?
+
+c. Run the program on the 36-city TSP problem instance given in the file problem36. Plot how the cost of the solution changes over time during one run of the algorithm. What is the cost of the best solution that your algorithm found within the first 5 minutes?
+
+d. Is simulated annealing complete? Explain why or why not. e. Is it optimal? Explain why or why not.
+
+Submit the following:
+
+A well documented copy of your code.
+A discussion of the local search operators you used.
+A discussion of the annealing schedules you used and how they influenced your search results.
+Your plot from question c.
+Answers to questions posed in d and e.
+ 
